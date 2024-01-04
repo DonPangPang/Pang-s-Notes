@@ -28,8 +28,9 @@ await using var scoped = app.Services.CreateAsyncScope();
 using var db = scoped.ServiceProvider.GetRequiredService<SampleDbContext>();
 try
 {
-    db.Database.EnsureDeleted();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
+    //db.Database.EnsureDeleted();
+    //db.Database.EnsureCreated();
 }
 catch
 {

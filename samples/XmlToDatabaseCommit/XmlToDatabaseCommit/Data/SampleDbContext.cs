@@ -1,7 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XmlToDatabaseCommit.Data;
+
+[Table("__EFMigrationsHistory")]
+public class EFMigrationsHistory
+{
+    [Key]
+    [MaxLength(150)]
+    public required string MigrationId { get; set; }
+
+    [MaxLength(32)]
+    public string ProductVersion { get; set; } = null!;
+
+    [NotMapped]
+    public string Sort => MigrationId.Split("_")[0];
+
+    [Comment("迁移时间")]
+    public DateTime? MigrationTime { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// 默认成功，失败不会入库
+    /// </summary>
+    [Column(TypeName = "varchar(20)")]
+    public MigrationType MigrationType { get; set; } = MigrationType.Success;
+}
+
+public enum MigrationType
+{
+    Success
+}
 
 /// <summary>
 /// 
@@ -10,7 +40,7 @@ public class SampleDbContext : DbContext
 {
     public SampleDbContext(DbContextOptions<SampleDbContext> options) : base(options) { }
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<EFMigrationsHistory> EFMigrationsHistory { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
