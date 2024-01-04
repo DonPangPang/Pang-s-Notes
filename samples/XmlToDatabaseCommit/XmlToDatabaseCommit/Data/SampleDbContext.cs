@@ -81,3 +81,11 @@ public class User
     /// </summary>
     public required string Email { get; set; }
 }
+
+public class SqlQueryTest(SampleDbContext dbContext)
+{
+    public IQueryable<T> Query<T>() where T : class
+    {
+        return dbContext.Database.SqlQuery<T>($"select * from {typeof(T).Name}");
+    }
+}
