@@ -80,12 +80,27 @@ public class User
     /// 邮箱
     /// </summary>
     public required string Email { get; set; }
+
+    public ICollection<Company> Companies { get; set; } = new List<Company>();
+}
+
+public class Company
+{
+    public Guid Id { get; set; }
+    public required string Name { get; set; }
 }
 
 public class SqlQueryTest(SampleDbContext dbContext)
 {
     public IQueryable<T> Query<T>() where T : class
     {
+
+
         return dbContext.Database.SqlQuery<T>($"select * from {typeof(T).Name}");
+    }
+
+    public async Task Test<T>() where T : class
+    {
+        var user = await dbContext.Set<User>().SingleAsync();
     }
 }
